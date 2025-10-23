@@ -5,7 +5,7 @@
 bool isNumber(const std::string& s) {
     if (s.empty()) return false;
     std::size_t i = 0;
-    if (s[0] == '+' || s[0] == '-') {
+    if (s[0] == '+' || s[0] == '-' || s[0] == '*' || s[0] == '/') {
         if (s.size() == 1) return false; // sign alone is not a number
         i = 1;
     }
@@ -16,12 +16,15 @@ bool isNumber(const std::string& s) {
 }
 
 bool isSymbol(const std::string& s) {
-    return s.size() == 1 && (s[0] == '+' || s[0] == '-');
+    return s.size() == 1 &&
+        (s[0] == '+' || s[0] == '-' || s[0] == '*' || s[0] == '/');
 }
 
-int calculate(int left, char op, int right) {
+double calculate(double left, char op, double right) {
     if (op == '+') return left + right;
     if (op == '-') return left - right;
+    if (op == '*') return left * right;
+    if (op == '/') return left / right;
     return left; // fallback, should not happen if validated
 }
 
@@ -32,7 +35,7 @@ int main() {
     bool needNum = true;       // true: expect a number, false: expect an operator
     bool hasResult = false;    // tracks if we already have an accumulated result
     char symbol = '+';         // current operator to apply
-    int result = 0;
+    double result = 0;
 
     do {
         if (needNum) {
@@ -41,7 +44,7 @@ int main() {
             if (input.empty()) break;
 
             if (isNumber(input)) {
-                int value = std::stoi(input);
+                double value = std::stoi(input);
                 if (!hasResult) {
                     result = value;
                     hasResult = true;
@@ -53,7 +56,7 @@ int main() {
                 std::cout << input << " is not a number.\n";
             }
         } else {
-            std::cout << "Please input a symbol (+ or -), or press [ENTER] to complete calculation:\n";
+            std::cout << "Please input a symbol (+ - * /), or press [ENTER] to complete calculation:\n";
             std::getline(std::cin, input);
             if (input.empty()) break;
 
